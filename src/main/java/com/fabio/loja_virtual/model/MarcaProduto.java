@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @Table(name = "marca_produto")
+@SequenceGenerator(name = "seq_marca_produto_novo", sequenceName = "seq_marca_produto_novo", initialValue = 1, allocationSize = 1)
 public class MarcaProduto implements Serializable {
 
     @Id
