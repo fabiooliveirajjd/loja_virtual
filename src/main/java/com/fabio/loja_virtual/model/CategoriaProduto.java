@@ -7,13 +7,15 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name = "marca_produto")
-public class MarcaProduto implements Serializable {
+@Table(name = "categoria_produto")
+public class CategoriaProduto implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_marca_produto_novo")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "nome_desc", nullable = false)
     private String nomeDesc;
+
 }
