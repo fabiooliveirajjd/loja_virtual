@@ -1,6 +1,7 @@
 package com.fabio.loja_virtual.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,8 +12,9 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "usuario")
+@Data
+@EqualsAndHashCode
 @SequenceGenerator(name = "seq_usuario", sequenceName = "seq_usuario", initialValue = 1, allocationSize = 1)
 public class Usuario implements UserDetails, Serializable {
 

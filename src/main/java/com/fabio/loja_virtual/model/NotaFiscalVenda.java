@@ -1,6 +1,7 @@
 package com.fabio.loja_virtual.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "nota_fiscal_venda")
 @Data
+@EqualsAndHashCode
 @SequenceGenerator(name = "seq_nota_fiscal_venda", sequenceName = "seq_nota_fiscal_venda", allocationSize = 1, initialValue = 1)
 public class NotaFiscalVenda implements Serializable {
 

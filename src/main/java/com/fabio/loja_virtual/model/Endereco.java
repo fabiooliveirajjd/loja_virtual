@@ -8,9 +8,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "endereco")
 @Data
 @EqualsAndHashCode
-@Table(name = "endereco")
 @SequenceGenerator(name = "seq_endereco", sequenceName = "seq_endereco", initialValue = 1, allocationSize = 1)
 public class Endereco implements Serializable {
 

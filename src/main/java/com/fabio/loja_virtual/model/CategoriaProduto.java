@@ -7,8 +7,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Data
 @Table(name = "categoria_produto")
+@Data
 @EqualsAndHashCode
 @SequenceGenerator(name = "seq_categoria_produto", sequenceName = "seq_categoria_produto", initialValue = 1, allocationSize = 1)
 public class CategoriaProduto implements Serializable {
