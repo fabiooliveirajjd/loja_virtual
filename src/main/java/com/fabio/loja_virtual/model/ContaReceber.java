@@ -18,8 +18,10 @@ public class ContaReceber implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_conta_receber")
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
     @Column(nullable = false)
@@ -33,16 +35,14 @@ public class ContaReceber implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dtPagamento;
 
-    @Column(nullable = false)
+    @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal;
 
-
+    @Column(name = "valor_desconto")
     private BigDecimal valorDesconto;
 
     @ManyToOne(targetEntity = Pessoa.class)
     @JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
     private Pessoa pessoa;
-
-
-
+    
 }

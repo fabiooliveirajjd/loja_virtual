@@ -13,17 +13,21 @@ import java.io.Serializable;
 @SequenceGenerator(name = "seq_status_rastreio", sequenceName = "seq_status_rastreio", allocationSize = 1, initialValue = 1)
 public class StatusRastreio implements Serializable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_status_rastreio")
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "centro_distribuicao")
     private String centroDistribuicao;
 
+    @Column(name = "cidade")
     private String cidade;
 
+    @Column(name = "estado")
     private String estado;
 
+    @Column(name = "status")
     private String status;
 
     @ManyToOne

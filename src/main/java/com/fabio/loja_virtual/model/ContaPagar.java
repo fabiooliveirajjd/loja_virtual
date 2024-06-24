@@ -16,18 +16,18 @@ import java.util.Date;
 @SequenceGenerator(name = "seq_conta_pagar", sequenceName = "seq_conta_pagar", allocationSize = 1, initialValue = 1)
 public class ContaPagar implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_conta_pagar")
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @Column(nullable = false)
+    @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal;
 
+    @Column(name = "valor_desconto")
     private BigDecimal valorDesconto;
 
     @Column(nullable = false)
@@ -50,6 +50,5 @@ public class ContaPagar implements Serializable {
     @JoinColumn(name = "pessoa_forn_id", nullable = false,
             foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_forn_fk"))
     private Pessoa pessoa_fornecedor;
-
 
 }

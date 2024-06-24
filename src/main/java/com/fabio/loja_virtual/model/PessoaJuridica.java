@@ -1,6 +1,7 @@
 package com.fabio.loja_virtual.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "pessoa_juridica")
 @Data
+@EqualsAndHashCode
 @PrimaryKeyJoinColumn(name = "id")
-public class PessaJuridica extends Pessoa {
+public class PessoaJuridica extends Pessoa {
 
     @Column(name = "cnpj", nullable = false)
     private String cnpj;
@@ -28,7 +30,7 @@ public class PessaJuridica extends Pessoa {
     @Column(name = "razao_social", nullable = false)
     private String razaoSocial;
 
-    @Column(name = "categoria", nullable = false)
+    @Column(name = "categoria")
     private String categoria;
 
 }

@@ -10,12 +10,13 @@ public class AvaliacaoProduto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_avaliacao_produto")
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "nota", nullable = false)
     private Integer nota;
 
-    @Column(nullable = false)
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
     @ManyToOne(targetEntity = Pessoa.class)
@@ -25,4 +26,5 @@ public class AvaliacaoProduto implements Serializable {
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
     private Produto produto;
+
 }

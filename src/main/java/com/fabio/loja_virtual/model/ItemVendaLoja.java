@@ -15,8 +15,10 @@ public class ItemVendaLoja implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_item_venda_loja")
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "quantidade", nullable = false)
     private Double quantidade;
 
     @ManyToOne
@@ -27,4 +29,5 @@ public class ItemVendaLoja implements Serializable {
     @ManyToOne
     @JoinColumn(name = "venda_compraLoja_virtu_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "venda_compraLoja_virtu_fk"))
     private VendaCompraLojaVirtual vendaCompraLojaVirtual;
+
 }

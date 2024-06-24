@@ -19,6 +19,7 @@ public class VendaCompraLojaVirtual implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_vd_cp_loja_virt")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(targetEntity = Pessoa.class)
@@ -33,9 +34,10 @@ public class VendaCompraLojaVirtual implements Serializable {
     @JoinColumn(name = "endereco_cobranca_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "endereco_cobranca_fk"))
     private Endereco enderecoCobranca;
 
-    @Column(nullable = false)
+    @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal;
 
+    @Column(name = "valor_desconto")
     private BigDecimal valorDesconto;
 
     @ManyToOne
@@ -47,17 +49,21 @@ public class VendaCompraLojaVirtual implements Serializable {
     private NotaFiscalVenda notaFiscalVenda;
 
     @ManyToOne
-    @JoinColumn(name = "cup_desc_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cup_desc_fk"))
+    @JoinColumn(name = "cup_desc_id", foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cup_desc_fk"))
     private CupDesc cupDesc;
 
+    @Column(name = "valor_frete", nullable = false)
     private BigDecimal valorFrete;
 
-    private Integer diasEntrega;
+    @Column(name = "dia_entrega", nullable = false)
+    private Integer diaEntrega;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "data_venda", nullable = false)
     private Date dataVenda;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "data_entrega", nullable = false)
     private Date dataEntrega;
 
 }

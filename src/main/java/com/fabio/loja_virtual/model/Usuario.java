@@ -18,14 +18,22 @@ public class Usuario implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuario")
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "login", nullable = false)
     private String login;
 
+    @Column(name = "senha", nullable = false)
     private String senha;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "data_atual_senha", nullable = false)
     private Date dataAtualSenha;
+
+    @ManyToOne(targetEntity = Pessoa.class)
+    @JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
+    private Pessoa pessoa;
 
     /**
      * Atributo que define a relação de um para muitos entre a entidade Usuario e Acesso, configurada para carregamento preguiçoso (LAZY).

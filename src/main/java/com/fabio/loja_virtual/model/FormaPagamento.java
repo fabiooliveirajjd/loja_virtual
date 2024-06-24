@@ -16,14 +16,11 @@ public class FormaPagamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_forma_pagamento")
+    @Column(name = "id")
     private Long id;
 
-
-    @Column(nullable = false)
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
-//    @ManyToOne(targetEntity = PessoaJuridica.class)
-//    @JoinColumn(name = "empresa_id", nullable = false,
-//            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_id_fk"))
-//    private PessaJuridica empresa;
 }
+
