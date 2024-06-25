@@ -4,12 +4,13 @@ import com.fabio.loja_virtual.controller.AcessoController;
 import com.fabio.loja_virtual.model.Acesso;
 import com.fabio.loja_virtual.repository.AcessoRepository;
 import com.fabio.loja_virtual.service.AcessoService;
+import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = LojaVirtualApplication.class)
-class LojaVirtualApplicationTests {
+public class LojaVirtualApplicationTests extends TestCase {
 
 	@Autowired
 	private AcessoService acessoService;
@@ -25,7 +26,9 @@ class LojaVirtualApplicationTests {
 		Acesso acesso = new Acesso();
 
 		acesso.setDescricao("ROLE_ADMIN");
-		acessoController.salvarAcesso(acesso);
+		acessoController.salvarAcesso(acesso).getBody();
+
+
 	}
 
 }
