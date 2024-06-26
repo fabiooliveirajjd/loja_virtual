@@ -1,5 +1,6 @@
 package com.fabio.loja_virtual.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,7 @@ public class Acesso implements GrantedAuthority {
     @Column(name = "descricao", nullable = false)
     private String descricao; // Acesso ex: ROLE_ADMIN ou ROLE_SECRETARIO
 
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return this.descricao;
