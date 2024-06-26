@@ -26,9 +26,9 @@ public class AcessoController {
     }
 
     @PostMapping(value = "**/deleteAcesso") /*Mapeando a url para receber JSON*/
-    public ResponseEntity<String> deleteAcesso(@RequestBody Acesso acesso) { /*Recebe o JSON e converte pra Objeto*/
+    public ResponseEntity<?> deleteAcesso(@RequestBody Acesso acesso) { /*Recebe o JSON e converte pra Objeto*/
         acessoRepository.deleteById(acesso.getId());
-        return new ResponseEntity<String>("Acesso Removido", HttpStatus.OK);
+        return new ResponseEntity<>("Acesso Removido", HttpStatus.OK);
     }
 
     @DeleteMapping(value = "**/deleteAcessoPorId/{id}")
