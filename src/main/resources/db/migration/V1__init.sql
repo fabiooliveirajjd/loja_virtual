@@ -1,1 +1,1654 @@
-c
+----
+---- PostgreSQL database dump
+----
+--
+---- Dumped from database version 16.1
+---- Dumped by pg_dump version 16.1
+--
+---- Started on 2024-07-03 10:58:00
+--
+--SET statement_timeout = 0;
+--SET lock_timeout = 0;
+--SET idle_in_transaction_session_timeout = 0;
+--SET client_encoding = 'UTF8';
+--SET standard_conforming_strings = on;
+--SELECT pg_catalog.set_config('search_path', '', false);
+--SET check_function_bodies = false;
+--SET xmloption = content;
+--SET client_min_messages = warning;
+--SET row_security = off;
+--
+--DROP DATABASE loja_virtual;
+----
+---- TOC entry 5075 (class 1262 OID 34870)
+---- Name: loja_virtual; Type: DATABASE; Schema: -; Owner: -
+----
+--
+--CREATE DATABASE loja_virtual WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Portuguese_Brazil.1252';
+--
+--
+--\connect loja_virtual
+--
+--SET statement_timeout = 0;
+--SET lock_timeout = 0;
+--SET idle_in_transaction_session_timeout = 0;
+--SET client_encoding = 'UTF8';
+--SET standard_conforming_strings = on;
+--SELECT pg_catalog.set_config('search_path', '', false);
+--SET check_function_bodies = false;
+--SET xmloption = content;
+--SET client_min_messages = warning;
+--SET row_security = off;
+--
+----
+---- TOC entry 5 (class 2615 OID 2200)
+---- Name: public; Type: SCHEMA; Schema: -; Owner: -
+----
+--
+--CREATE SCHEMA public;
+--
+--
+----
+---- TOC entry 5076 (class 0 OID 0)
+---- Dependencies: 5
+---- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+----
+--
+--COMMENT ON SCHEMA public IS 'standard public schema';
+--
+--
+----
+---- TOC entry 259 (class 1255 OID 34871)
+---- Name: validachavepessoa(); Type: FUNCTION; Schema: public; Owner: -
+----
+--
+--CREATE FUNCTION public.validachavepessoa() RETURNS trigger
+--    LANGUAGE plpgsql
+--    AS $$
+--
+--  declare existe integer;
+--
+--  begin
+--    existe = (select count(1) from pessoa_fisica where id = NEW.pessoa_id);
+--    if(existe <=0 ) then
+--     existe = (select count(1) from pessoa_juridica where id = NEW.pessoa_id);
+--    if (existe <= 0) then
+--      raise exception 'Não foi encontrado o ID ou PK da pessoa para realizar a associação';
+--     end if;
+--    end if;
+--    RETURN NEW;
+--  end;
+--  $$;
+--
+--
+----
+---- TOC entry 260 (class 1255 OID 34872)
+---- Name: validachavepessoa2(); Type: FUNCTION; Schema: public; Owner: -
+----
+--
+--CREATE FUNCTION public.validachavepessoa2() RETURNS trigger
+--    LANGUAGE plpgsql
+--    AS $$
+--
+--  declare existe integer;
+--
+--  begin
+--    existe = (select count(1) from pessoa_fisica where id = NEW.pessoa_forn_id);
+--    if(existe <=0 ) then
+--     existe = (select count(1) from pessoa_juridica where id = NEW.pessoa_forn_id);
+--    if (existe <= 0) then
+--      raise exception 'Não foi encontrado o ID ou PK da pessoa para realizar a associação';
+--     end if;
+--    end if;
+--    RETURN NEW;
+--  end;
+--  $$;
+--
+--
+--SET default_tablespace = '';
+--
+--SET default_table_access_method = heap;
+--
+----
+---- TOC entry 215 (class 1259 OID 34873)
+---- Name: acesso; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.acesso (
+--    id bigint NOT NULL,
+--    descricao character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 216 (class 1259 OID 34876)
+---- Name: avaliacao_produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.avaliacao_produto (
+--    id bigint NOT NULL,
+--    descricao character varying(255) NOT NULL,
+--    nota integer NOT NULL,
+--    pessoa_id bigint NOT NULL,
+--    produto_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 217 (class 1259 OID 34879)
+---- Name: categoria_produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.categoria_produto (
+--    id bigint NOT NULL,
+--    nome_desc character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 218 (class 1259 OID 34882)
+---- Name: conta_pagar; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.conta_pagar (
+--    id bigint NOT NULL,
+--    descricao character varying(255) NOT NULL,
+--    dt_pagamento date,
+--    dt_vencimento date NOT NULL,
+--    status character varying(255) NOT NULL,
+--    valor_desconto numeric(19,2),
+--    valor_total numeric(19,2) NOT NULL,
+--    pessoa_id bigint NOT NULL,
+--    pessoa_forn_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 219 (class 1259 OID 34887)
+---- Name: conta_receber; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.conta_receber (
+--    id bigint NOT NULL,
+--    descricao character varying(255) NOT NULL,
+--    dt_pagamento date,
+--    dt_vencimento date NOT NULL,
+--    status character varying(255) NOT NULL,
+--    valor_desconto numeric(19,2),
+--    valor_total numeric(19,2) NOT NULL,
+--    pessoa_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 220 (class 1259 OID 34892)
+---- Name: cup_desc; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.cup_desc (
+--    id bigint NOT NULL,
+--    cod_desc character varying(255) NOT NULL,
+--    data_validade_cupom date NOT NULL,
+--    valor_porcent_desc numeric(19,2),
+--    valor_real_desc numeric(19,2),
+--    cod_des character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 221 (class 1259 OID 34895)
+---- Name: endereco; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.endereco (
+--    id bigint NOT NULL,
+--    bairro character varying(255) NOT NULL,
+--    cep character varying(255) NOT NULL,
+--    cidade character varying(255) NOT NULL,
+--    complemento character varying(255),
+--    numero character varying(255) NOT NULL,
+--    rua_logra character varying(255) NOT NULL,
+--    tipo_endereco character varying(255) NOT NULL,
+--    uf character varying(255) NOT NULL,
+--    pessoa_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 255 (class 1259 OID 35117)
+---- Name: flyway_schema_history; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.flyway_schema_history (
+--    installed_rank integer NOT NULL,
+--    version character varying(50),
+--    description character varying(200) NOT NULL,
+--    type character varying(20) NOT NULL,
+--    script character varying(1000) NOT NULL,
+--    checksum integer,
+--    installed_by character varying(100) NOT NULL,
+--    installed_on timestamp without time zone DEFAULT now() NOT NULL,
+--    execution_time integer NOT NULL,
+--    success boolean NOT NULL
+--);
+--
+--
+----
+---- TOC entry 222 (class 1259 OID 34900)
+---- Name: forma_pagamento; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.forma_pagamento (
+--    id bigint NOT NULL,
+--    descricao character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 257 (class 1259 OID 35135)
+---- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.hibernate_sequence
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 223 (class 1259 OID 34903)
+---- Name: imagem_produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.imagem_produto (
+--    id bigint NOT NULL,
+--    imagem_miniatura text NOT NULL,
+--    imagem_original text NOT NULL,
+--    produto_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 224 (class 1259 OID 34908)
+---- Name: item_venda_loja; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.item_venda_loja (
+--    id bigint NOT NULL,
+--    quantidade double precision NOT NULL,
+--    produto_id bigint NOT NULL,
+--    venda_compra_loja_virtu_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 225 (class 1259 OID 34911)
+---- Name: marca_produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.marca_produto (
+--    id bigint NOT NULL,
+--    nome_desc character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 226 (class 1259 OID 34914)
+---- Name: nota_fiscal_compra; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.nota_fiscal_compra (
+--    id bigint NOT NULL,
+--    data_compra date NOT NULL,
+--    descricao_obs character varying(255),
+--    numero_nota character varying(255) NOT NULL,
+--    serie_nota character varying(255) NOT NULL,
+--    valor_desconto numeric(19,2),
+--    valor_icms numeric(19,2) NOT NULL,
+--    valor_total numeric(19,2) NOT NULL,
+--    conta_pagar_id bigint NOT NULL,
+--    pessoa_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 227 (class 1259 OID 34919)
+---- Name: nota_fiscal_venda; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.nota_fiscal_venda (
+--    id bigint NOT NULL,
+--    numero character varying(255) NOT NULL,
+--    pdf text NOT NULL,
+--    serie character varying(255) NOT NULL,
+--    tipo character varying(255) NOT NULL,
+--    xml text NOT NULL,
+--    venda_compra_loja_virt_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 228 (class 1259 OID 34924)
+---- Name: nota_item_produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.nota_item_produto (
+--    id bigint NOT NULL,
+--    quantidade double precision NOT NULL,
+--    nota_fiscal_compra_id bigint NOT NULL,
+--    produto_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 229 (class 1259 OID 34927)
+---- Name: pessoa_fisica; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.pessoa_fisica (
+--    id bigint NOT NULL,
+--    email character varying(255) NOT NULL,
+--    nome character varying(255) NOT NULL,
+--    telefone character varying(255) NOT NULL,
+--    cpf character varying(255) NOT NULL,
+--    data_nascimento date,
+--    tipo_pessoa character varying(255)
+--);
+--
+--
+----
+---- TOC entry 230 (class 1259 OID 34932)
+---- Name: pessoa_juridica; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.pessoa_juridica (
+--    id bigint NOT NULL,
+--    email character varying(255) NOT NULL,
+--    nome character varying(255) NOT NULL,
+--    telefone character varying(255) NOT NULL,
+--    categoria character varying(255),
+--    cnpj character varying(255) NOT NULL,
+--    insc_estadual character varying(255) NOT NULL,
+--    insc_municipal character varying(255),
+--    nome_fantasia character varying(255) NOT NULL,
+--    razao_social character varying(255) NOT NULL,
+--    tipo_pessoa character varying(255),
+--    inscricao_estadual character varying(255) NOT NULL,
+--    inscricao_municipal character varying(255) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 231 (class 1259 OID 34937)
+---- Name: produto; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.produto (
+--    id bigint NOT NULL,
+--    qtd_estoque integer NOT NULL,
+--    qtde_alerta_estoque integer,
+--    alerta_qtde_estoque boolean,
+--    altura double precision NOT NULL,
+--    ativo boolean NOT NULL,
+--    descricao text NOT NULL,
+--    largura double precision NOT NULL,
+--    link_youtube character varying(255),
+--    nome character varying(255) NOT NULL,
+--    peso double precision NOT NULL,
+--    profundidade double precision NOT NULL,
+--    qtde_clique integer,
+--    tipo_unidade character varying(255) NOT NULL,
+--    valor_venda numeric(19,2) NOT NULL
+--);
+--
+--
+----
+---- TOC entry 232 (class 1259 OID 34942)
+---- Name: seq_acesso; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_acesso
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 233 (class 1259 OID 34943)
+---- Name: seq_avaliacao_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_avaliacao_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 234 (class 1259 OID 34944)
+---- Name: seq_categoria_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_categoria_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 235 (class 1259 OID 34945)
+---- Name: seq_conta_pagar; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_conta_pagar
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 236 (class 1259 OID 34946)
+---- Name: seq_conta_receber; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_conta_receber
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 237 (class 1259 OID 34947)
+---- Name: seq_cup_desc; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_cup_desc
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 238 (class 1259 OID 34948)
+---- Name: seq_endereco; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_endereco
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 239 (class 1259 OID 34949)
+---- Name: seq_forma_pagamento; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_forma_pagamento
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 240 (class 1259 OID 34950)
+---- Name: seq_imagem_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_imagem_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 241 (class 1259 OID 34951)
+---- Name: seq_item_venda_loja; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_item_venda_loja
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 242 (class 1259 OID 34952)
+---- Name: seq_marca_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_marca_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 258 (class 1259 OID 35136)
+---- Name: seq_marca_produto_novo; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_marca_produto_novo
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 243 (class 1259 OID 34953)
+---- Name: seq_nota_fiscal_compra; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_nota_fiscal_compra
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 244 (class 1259 OID 34954)
+---- Name: seq_nota_fiscal_venda; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_nota_fiscal_venda
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 245 (class 1259 OID 34955)
+---- Name: seq_nota_item_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_nota_item_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 246 (class 1259 OID 34956)
+---- Name: seq_pessoa; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_pessoa
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 247 (class 1259 OID 34957)
+---- Name: seq_produto; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_produto
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 248 (class 1259 OID 34958)
+---- Name: seq_status_rastreio; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_status_rastreio
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 249 (class 1259 OID 34959)
+---- Name: seq_usuario; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_usuario
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 250 (class 1259 OID 34960)
+---- Name: seq_vd_cp_loja_virt; Type: SEQUENCE; Schema: public; Owner: -
+----
+--
+--CREATE SEQUENCE public.seq_vd_cp_loja_virt
+--    START WITH 1
+--    INCREMENT BY 1
+--    NO MINVALUE
+--    NO MAXVALUE
+--    CACHE 1;
+--
+--
+----
+---- TOC entry 251 (class 1259 OID 34961)
+---- Name: status_rastreio; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.status_rastreio (
+--    id bigint NOT NULL,
+--    centro_distribuicao character varying(255),
+--    cidade character varying(255),
+--    estado character varying(255),
+--    status character varying(255),
+--    venda_compra_loja_virt_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 252 (class 1259 OID 34966)
+---- Name: usuario; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.usuario (
+--    id bigint NOT NULL,
+--    data_atual_senha date NOT NULL,
+--    login character varying(255) NOT NULL,
+--    senha character varying(255) NOT NULL,
+--    pessoa_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 256 (class 1259 OID 35128)
+---- Name: usuario_acesso; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.usuario_acesso (
+--    usuario_id bigint NOT NULL,
+--    acesso_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 253 (class 1259 OID 34971)
+---- Name: usuarios_acesso; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.usuarios_acesso (
+--    usuario_id bigint NOT NULL,
+--    acesso_id bigint NOT NULL
+--);
+--
+--
+----
+---- TOC entry 254 (class 1259 OID 34974)
+---- Name: vd_cp_loja_virt; Type: TABLE; Schema: public; Owner: -
+----
+--
+--CREATE TABLE public.vd_cp_loja_virt (
+--    id bigint NOT NULL,
+--    data_entrega date NOT NULL,
+--    data_venda date NOT NULL,
+--    dia_entrega integer NOT NULL,
+--    valor_desconto numeric(19,2),
+--    valor_fret numeric(19,2) NOT NULL,
+--    valor_total numeric(19,2) NOT NULL,
+--    cupom_desc_id bigint,
+--    endereco_cobranca_id bigint NOT NULL,
+--    endereco_entrega_id bigint NOT NULL,
+--    forma_pagamento_id bigint NOT NULL,
+--    nota_fiscal_venda_id bigint NOT NULL,
+--    pessoa_id bigint NOT NULL,
+--    valor_frete numeric(19,2) NOT NULL,
+--    cup_desc_id bigint
+--);
+--
+--
+----
+---- TOC entry 5026 (class 0 OID 34873)
+---- Dependencies: 215
+---- Data for Name: acesso; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--INSERT INTO public.acesso VALUES (1, 'ROLE_COMPRADOR1719836994111');
+--INSERT INTO public.acesso VALUES (4, 'ROLE_OBTER_ID');
+--INSERT INTO public.acesso VALUES (5, 'ROLE_COMPRADOR1719837021006');
+--
+--
+----
+---- TOC entry 5027 (class 0 OID 34876)
+---- Dependencies: 216
+---- Data for Name: avaliacao_produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--INSERT INTO public.avaliacao_produto VALUES (3, 'tetse avaliacao produto trigger', 10, 1, 1);
+--INSERT INTO public.avaliacao_produto VALUES (4, 'tetse avaliacao produto trigger', 10, 1, 1);
+--INSERT INTO public.avaliacao_produto VALUES (5, 'tetse avaliacao produto trigger', 10, 1, 1);
+--
+--
+----
+---- TOC entry 5028 (class 0 OID 34879)
+---- Dependencies: 217
+---- Data for Name: categoria_produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5029 (class 0 OID 34882)
+---- Dependencies: 218
+---- Data for Name: conta_pagar; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5030 (class 0 OID 34887)
+---- Dependencies: 219
+---- Data for Name: conta_receber; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5031 (class 0 OID 34892)
+---- Dependencies: 220
+---- Data for Name: cup_desc; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5032 (class 0 OID 34895)
+---- Dependencies: 221
+---- Data for Name: endereco; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5066 (class 0 OID 35117)
+---- Dependencies: 255
+---- Data for Name: flyway_schema_history; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--INSERT INTO public.flyway_schema_history VALUES (1, '1', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'null', '2024-07-01 09:29:20.250798', 0, true);
+--INSERT INTO public.flyway_schema_history VALUES (2, '2', '20-06-2024', 'SQL', 'V2__20-06-2024.sql', -822002173, 'postgres', '2024-07-01 09:29:20.29128', 12, true);
+--INSERT INTO public.flyway_schema_history VALUES (3, '3', '30-06-2024', 'SQL', 'V3__30-06-2024.sql', 1377689293, 'postgres', '2024-07-01 09:29:20.313332', 2, true);
+--
+--
+----
+---- TOC entry 5033 (class 0 OID 34900)
+---- Dependencies: 222
+---- Data for Name: forma_pagamento; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5034 (class 0 OID 34903)
+---- Dependencies: 223
+---- Data for Name: imagem_produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5035 (class 0 OID 34908)
+---- Dependencies: 224
+---- Data for Name: item_venda_loja; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5036 (class 0 OID 34911)
+---- Dependencies: 225
+---- Data for Name: marca_produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5037 (class 0 OID 34914)
+---- Dependencies: 226
+---- Data for Name: nota_fiscal_compra; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5038 (class 0 OID 34919)
+---- Dependencies: 227
+---- Data for Name: nota_fiscal_venda; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5039 (class 0 OID 34924)
+---- Dependencies: 228
+---- Data for Name: nota_item_produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5040 (class 0 OID 34927)
+---- Dependencies: 229
+---- Data for Name: pessoa_fisica; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--INSERT INTO public.pessoa_fisica VALUES (1, 'asasasa@gmail', '454544554', '55454445446', '454454545', '1987-10-10', NULL);
+--
+--
+----
+---- TOC entry 5041 (class 0 OID 34932)
+---- Dependencies: 230
+---- Data for Name: pessoa_juridica; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5042 (class 0 OID 34937)
+---- Dependencies: 231
+---- Data for Name: produto; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--INSERT INTO public.produto VALUES (1, 1, 1, true, 10, true, 'produto teste', 50.2, 'sdsdsdsds', 'nome prouto teste', 50, 80.8, 50, 'UN', 50.00);
+--
+--
+----
+---- TOC entry 5062 (class 0 OID 34961)
+---- Dependencies: 251
+---- Data for Name: status_rastreio; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5063 (class 0 OID 34966)
+---- Dependencies: 252
+---- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5067 (class 0 OID 35128)
+---- Dependencies: 256
+---- Data for Name: usuario_acesso; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5064 (class 0 OID 34971)
+---- Dependencies: 253
+---- Data for Name: usuarios_acesso; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5065 (class 0 OID 34974)
+---- Dependencies: 254
+---- Data for Name: vd_cp_loja_virt; Type: TABLE DATA; Schema: public; Owner: -
+----
+--
+--
+--
+----
+---- TOC entry 5077 (class 0 OID 0)
+---- Dependencies: 257
+---- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.hibernate_sequence', 1, false);
+--
+--
+----
+---- TOC entry 5078 (class 0 OID 0)
+---- Dependencies: 232
+---- Name: seq_acesso; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_acesso', 8, true);
+--
+--
+----
+---- TOC entry 5079 (class 0 OID 0)
+---- Dependencies: 233
+---- Name: seq_avaliacao_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_avaliacao_produto', 1, false);
+--
+--
+----
+---- TOC entry 5080 (class 0 OID 0)
+---- Dependencies: 234
+---- Name: seq_categoria_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_categoria_produto', 1, false);
+--
+--
+----
+---- TOC entry 5081 (class 0 OID 0)
+---- Dependencies: 235
+---- Name: seq_conta_pagar; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_conta_pagar', 1, false);
+--
+--
+----
+---- TOC entry 5082 (class 0 OID 0)
+---- Dependencies: 236
+---- Name: seq_conta_receber; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_conta_receber', 1, false);
+--
+--
+----
+---- TOC entry 5083 (class 0 OID 0)
+---- Dependencies: 237
+---- Name: seq_cup_desc; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_cup_desc', 1, false);
+--
+--
+----
+---- TOC entry 5084 (class 0 OID 0)
+---- Dependencies: 238
+---- Name: seq_endereco; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_endereco', 1, false);
+--
+--
+----
+---- TOC entry 5085 (class 0 OID 0)
+---- Dependencies: 239
+---- Name: seq_forma_pagamento; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_forma_pagamento', 1, false);
+--
+--
+----
+---- TOC entry 5086 (class 0 OID 0)
+---- Dependencies: 240
+---- Name: seq_imagem_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_imagem_produto', 1, false);
+--
+--
+----
+---- TOC entry 5087 (class 0 OID 0)
+---- Dependencies: 241
+---- Name: seq_item_venda_loja; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_item_venda_loja', 1, false);
+--
+--
+----
+---- TOC entry 5088 (class 0 OID 0)
+---- Dependencies: 242
+---- Name: seq_marca_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_marca_produto', 1, false);
+--
+--
+----
+---- TOC entry 5089 (class 0 OID 0)
+---- Dependencies: 258
+---- Name: seq_marca_produto_novo; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_marca_produto_novo', 1, false);
+--
+--
+----
+---- TOC entry 5090 (class 0 OID 0)
+---- Dependencies: 243
+---- Name: seq_nota_fiscal_compra; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_nota_fiscal_compra', 1, false);
+--
+--
+----
+---- TOC entry 5091 (class 0 OID 0)
+---- Dependencies: 244
+---- Name: seq_nota_fiscal_venda; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_nota_fiscal_venda', 1, false);
+--
+--
+----
+---- TOC entry 5092 (class 0 OID 0)
+---- Dependencies: 245
+---- Name: seq_nota_item_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_nota_item_produto', 1, false);
+--
+--
+----
+---- TOC entry 5093 (class 0 OID 0)
+---- Dependencies: 246
+---- Name: seq_pessoa; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_pessoa', 1, false);
+--
+--
+----
+---- TOC entry 5094 (class 0 OID 0)
+---- Dependencies: 247
+---- Name: seq_produto; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_produto', 1, false);
+--
+--
+----
+---- TOC entry 5095 (class 0 OID 0)
+---- Dependencies: 248
+---- Name: seq_status_rastreio; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_status_rastreio', 1, false);
+--
+--
+----
+---- TOC entry 5096 (class 0 OID 0)
+---- Dependencies: 249
+---- Name: seq_usuario; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_usuario', 1, false);
+--
+--
+----
+---- TOC entry 5097 (class 0 OID 0)
+---- Dependencies: 250
+---- Name: seq_vd_cp_loja_virt; Type: SEQUENCE SET; Schema: public; Owner: -
+----
+--
+--SELECT pg_catalog.setval('public.seq_vd_cp_loja_virt', 1, false);
+--
+--
+----
+---- TOC entry 4800 (class 2606 OID 34978)
+---- Name: acesso acesso_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.acesso
+--    ADD CONSTRAINT acesso_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4802 (class 2606 OID 34980)
+---- Name: avaliacao_produto avaliacao_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.avaliacao_produto
+--    ADD CONSTRAINT avaliacao_produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4804 (class 2606 OID 34982)
+---- Name: categoria_produto categoria_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.categoria_produto
+--    ADD CONSTRAINT categoria_produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4806 (class 2606 OID 34984)
+---- Name: conta_pagar conta_pagar_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.conta_pagar
+--    ADD CONSTRAINT conta_pagar_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4808 (class 2606 OID 34986)
+---- Name: conta_receber conta_receber_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.conta_receber
+--    ADD CONSTRAINT conta_receber_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4810 (class 2606 OID 34988)
+---- Name: cup_desc cup_desc_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.cup_desc
+--    ADD CONSTRAINT cup_desc_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4812 (class 2606 OID 34990)
+---- Name: endereco endereco_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.endereco
+--    ADD CONSTRAINT endereco_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4842 (class 2606 OID 35124)
+---- Name: flyway_schema_history flyway_schema_history_pk; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.flyway_schema_history
+--    ADD CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank);
+--
+--
+----
+---- TOC entry 4814 (class 2606 OID 34992)
+---- Name: forma_pagamento forma_pagamento_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.forma_pagamento
+--    ADD CONSTRAINT forma_pagamento_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4816 (class 2606 OID 34994)
+---- Name: imagem_produto imagem_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.imagem_produto
+--    ADD CONSTRAINT imagem_produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4818 (class 2606 OID 34996)
+---- Name: item_venda_loja item_venda_loja_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.item_venda_loja
+--    ADD CONSTRAINT item_venda_loja_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4820 (class 2606 OID 34998)
+---- Name: marca_produto marca_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.marca_produto
+--    ADD CONSTRAINT marca_produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4822 (class 2606 OID 35000)
+---- Name: nota_fiscal_compra nota_fiscal_compra_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_fiscal_compra
+--    ADD CONSTRAINT nota_fiscal_compra_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4824 (class 2606 OID 35002)
+---- Name: nota_fiscal_venda nota_fiscal_venda_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_fiscal_venda
+--    ADD CONSTRAINT nota_fiscal_venda_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4826 (class 2606 OID 35004)
+---- Name: nota_item_produto nota_item_produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_item_produto
+--    ADD CONSTRAINT nota_item_produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4828 (class 2606 OID 35006)
+---- Name: pessoa_fisica pessoa_fisica_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.pessoa_fisica
+--    ADD CONSTRAINT pessoa_fisica_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4830 (class 2606 OID 35008)
+---- Name: pessoa_juridica pessoa_juridica_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.pessoa_juridica
+--    ADD CONSTRAINT pessoa_juridica_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4832 (class 2606 OID 35010)
+---- Name: produto produto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.produto
+--    ADD CONSTRAINT produto_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4834 (class 2606 OID 35012)
+---- Name: status_rastreio status_rastreio_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.status_rastreio
+--    ADD CONSTRAINT status_rastreio_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4845 (class 2606 OID 35132)
+---- Name: usuario_acesso uk_fhwpg5wu1u5p306q8gycxn9ky; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuario_acesso
+--    ADD CONSTRAINT uk_fhwpg5wu1u5p306q8gycxn9ky UNIQUE (acesso_id);
+--
+--
+----
+---- TOC entry 4847 (class 2606 OID 35134)
+---- Name: usuario_acesso unique_aceesso_user; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuario_acesso
+--    ADD CONSTRAINT unique_aceesso_user UNIQUE (usuario_id, acesso_id);
+--
+--
+----
+---- TOC entry 4838 (class 2606 OID 35016)
+---- Name: usuarios_acesso unique_acesso_user; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuarios_acesso
+--    ADD CONSTRAINT unique_acesso_user UNIQUE (usuario_id, acesso_id);
+--
+--
+----
+---- TOC entry 4836 (class 2606 OID 35018)
+---- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuario
+--    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4840 (class 2606 OID 35020)
+---- Name: vd_cp_loja_virt vd_cp_loja_virt_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT vd_cp_loja_virt_pkey PRIMARY KEY (id);
+--
+--
+----
+---- TOC entry 4843 (class 1259 OID 35125)
+---- Name: flyway_schema_history_s_idx; Type: INDEX; Schema: public; Owner: -
+----
+--
+--CREATE INDEX flyway_schema_history_s_idx ON public.flyway_schema_history USING btree (success);
+--
+--
+----
+---- TOC entry 4873 (class 2620 OID 35021)
+---- Name: conta_receber validachavepessoa; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa BEFORE UPDATE ON public.conta_receber FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4875 (class 2620 OID 35022)
+---- Name: endereco validachavepessoa; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa BEFORE UPDATE ON public.endereco FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4877 (class 2620 OID 35023)
+---- Name: nota_fiscal_compra validachavepessoa; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa BEFORE UPDATE ON public.nota_fiscal_compra FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4879 (class 2620 OID 35024)
+---- Name: usuario validachavepessoa; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa BEFORE UPDATE ON public.usuario FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4881 (class 2620 OID 35025)
+---- Name: vd_cp_loja_virt validachavepessoa; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa BEFORE UPDATE ON public.vd_cp_loja_virt FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4874 (class 2620 OID 35026)
+---- Name: conta_receber validachavepessoa2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa2 BEFORE INSERT ON public.conta_receber FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4876 (class 2620 OID 35027)
+---- Name: endereco validachavepessoa2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa2 BEFORE INSERT ON public.endereco FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4878 (class 2620 OID 35028)
+---- Name: nota_fiscal_compra validachavepessoa2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa2 BEFORE INSERT ON public.nota_fiscal_compra FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4880 (class 2620 OID 35029)
+---- Name: usuario validachavepessoa2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa2 BEFORE INSERT ON public.usuario FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4882 (class 2620 OID 35030)
+---- Name: vd_cp_loja_virt validachavepessoa2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoa2 BEFORE INSERT ON public.vd_cp_loja_virt FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4867 (class 2620 OID 35031)
+---- Name: avaliacao_produto validachavepessoaavaliacaoproduto; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoaavaliacaoproduto BEFORE UPDATE ON public.avaliacao_produto FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4868 (class 2620 OID 35032)
+---- Name: avaliacao_produto validachavepessoaavaliacaoproduto2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoaavaliacaoproduto2 BEFORE INSERT ON public.avaliacao_produto FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4869 (class 2620 OID 35033)
+---- Name: conta_pagar validachavepessoacontapagar; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoacontapagar BEFORE UPDATE ON public.conta_pagar FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4870 (class 2620 OID 35034)
+---- Name: conta_pagar validachavepessoacontapagar2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoacontapagar2 BEFORE INSERT ON public.conta_pagar FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa();
+--
+--
+----
+---- TOC entry 4871 (class 2620 OID 35035)
+---- Name: conta_pagar validachavepessoacontapagarpessoa_forn_id; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoacontapagarpessoa_forn_id BEFORE UPDATE ON public.conta_pagar FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa2();
+--
+--
+----
+---- TOC entry 4872 (class 2620 OID 35036)
+---- Name: conta_pagar validachavepessoacontapagarpessoa_forn_id2; Type: TRIGGER; Schema: public; Owner: -
+----
+--
+--CREATE TRIGGER validachavepessoacontapagarpessoa_forn_id2 BEFORE INSERT ON public.conta_pagar FOR EACH ROW EXECUTE FUNCTION public.validachavepessoa2();
+--
+--
+----
+---- TOC entry 4865 (class 2606 OID 35137)
+---- Name: usuario_acesso acesso_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuario_acesso
+--    ADD CONSTRAINT acesso_fk FOREIGN KEY (acesso_id) REFERENCES public.acesso(id);
+--
+--
+----
+---- TOC entry 4857 (class 2606 OID 35037)
+---- Name: usuarios_acesso aesso_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuarios_acesso
+--    ADD CONSTRAINT aesso_fk FOREIGN KEY (acesso_id) REFERENCES public.acesso(id);
+--
+--
+----
+---- TOC entry 4852 (class 2606 OID 35042)
+---- Name: nota_fiscal_compra conta_pagar_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_fiscal_compra
+--    ADD CONSTRAINT conta_pagar_fk FOREIGN KEY (conta_pagar_id) REFERENCES public.conta_pagar(id);
+--
+--
+----
+---- TOC entry 4859 (class 2606 OID 35147)
+---- Name: vd_cp_loja_virt cup_desc_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT cup_desc_fk FOREIGN KEY (cup_desc_id) REFERENCES public.cup_desc(id);
+--
+--
+----
+---- TOC entry 4860 (class 2606 OID 35047)
+---- Name: vd_cp_loja_virt cupom_desc_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT cupom_desc_fk FOREIGN KEY (cupom_desc_id) REFERENCES public.cup_desc(id);
+--
+--
+----
+---- TOC entry 4861 (class 2606 OID 35052)
+---- Name: vd_cp_loja_virt endereco_cobranca_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT endereco_cobranca_fk FOREIGN KEY (endereco_cobranca_id) REFERENCES public.endereco(id);
+--
+--
+----
+---- TOC entry 4862 (class 2606 OID 35057)
+---- Name: vd_cp_loja_virt endereco_entrega_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT endereco_entrega_fk FOREIGN KEY (endereco_entrega_id) REFERENCES public.endereco(id);
+--
+--
+----
+---- TOC entry 4863 (class 2606 OID 35062)
+---- Name: vd_cp_loja_virt forma_pagamento_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT forma_pagamento_fk FOREIGN KEY (forma_pagamento_id) REFERENCES public.forma_pagamento(id);
+--
+--
+----
+---- TOC entry 4854 (class 2606 OID 35067)
+---- Name: nota_item_produto nota_fiscal_compra_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_item_produto
+--    ADD CONSTRAINT nota_fiscal_compra_fk FOREIGN KEY (nota_fiscal_compra_id) REFERENCES public.nota_fiscal_compra(id);
+--
+--
+----
+---- TOC entry 4864 (class 2606 OID 35072)
+---- Name: vd_cp_loja_virt nota_fiscal_venda_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.vd_cp_loja_virt
+--    ADD CONSTRAINT nota_fiscal_venda_fk FOREIGN KEY (nota_fiscal_venda_id) REFERENCES public.nota_fiscal_venda(id);
+--
+--
+----
+---- TOC entry 4848 (class 2606 OID 35077)
+---- Name: avaliacao_produto produto_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.avaliacao_produto
+--    ADD CONSTRAINT produto_fk FOREIGN KEY (produto_id) REFERENCES public.produto(id);
+--
+--
+----
+---- TOC entry 4849 (class 2606 OID 35082)
+---- Name: imagem_produto produto_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.imagem_produto
+--    ADD CONSTRAINT produto_fk FOREIGN KEY (produto_id) REFERENCES public.produto(id);
+--
+--
+----
+---- TOC entry 4850 (class 2606 OID 35087)
+---- Name: item_venda_loja produto_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.item_venda_loja
+--    ADD CONSTRAINT produto_fk FOREIGN KEY (produto_id) REFERENCES public.produto(id);
+--
+--
+----
+---- TOC entry 4855 (class 2606 OID 35092)
+---- Name: nota_item_produto produto_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_item_produto
+--    ADD CONSTRAINT produto_fk FOREIGN KEY (produto_id) REFERENCES public.produto(id);
+--
+--
+----
+---- TOC entry 4858 (class 2606 OID 35097)
+---- Name: usuarios_acesso usuario_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuarios_acesso
+--    ADD CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES public.usuario(id);
+--
+--
+----
+---- TOC entry 4866 (class 2606 OID 35142)
+---- Name: usuario_acesso usuario_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.usuario_acesso
+--    ADD CONSTRAINT usuario_fk FOREIGN KEY (usuario_id) REFERENCES public.usuario(id);
+--
+--
+----
+---- TOC entry 4853 (class 2606 OID 35102)
+---- Name: nota_fiscal_venda venda_compra_loja_virt_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.nota_fiscal_venda
+--    ADD CONSTRAINT venda_compra_loja_virt_fk FOREIGN KEY (venda_compra_loja_virt_id) REFERENCES public.vd_cp_loja_virt(id);
+--
+--
+----
+---- TOC entry 4856 (class 2606 OID 35107)
+---- Name: status_rastreio venda_compra_loja_virt_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.status_rastreio
+--    ADD CONSTRAINT venda_compra_loja_virt_fk FOREIGN KEY (venda_compra_loja_virt_id) REFERENCES public.vd_cp_loja_virt(id);
+--
+--
+----
+---- TOC entry 4851 (class 2606 OID 35112)
+---- Name: item_venda_loja venda_compraloja_virtu_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+----
+--
+--ALTER TABLE ONLY public.item_venda_loja
+--    ADD CONSTRAINT venda_compraloja_virtu_fk FOREIGN KEY (venda_compra_loja_virtu_id) REFERENCES public.vd_cp_loja_virt(id);
+--
+--
+---- Completed on 2024-07-03 10:58:00
+--
+----
+---- PostgreSQL database dump complete
+----
+--
