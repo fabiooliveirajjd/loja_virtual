@@ -46,7 +46,7 @@ public class Usuario implements UserDetails, Serializable {
      * - 'acesso_id': coluna que referencia a chave primária 'id' da tabela 'acesso', também atuando como uma chave estrangeira.
      * As restrições de chave estrangeira são definidas para ambas as colunas, garantindo a integridade referencial entre as tabelas 'usuario' e 'acesso'.
      */
-    @OneToMany(fetch = FetchType.LAZY) //só carrega se for solicitado
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_acesso", uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "acesso_id"},
             name = "unique_aceesso_user"),
             joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id", table = "usuario",
